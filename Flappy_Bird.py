@@ -1,5 +1,10 @@
 import arcade
 import random
+from pathlib import Path
+
+# ------------------ Percorso ------------------
+BASE_DIR = Path(__file__).parent
+ASSETS = BASE_DIR / "assets"
 
 # ---------------- Costanti ----------------
 SCREEN_WIDTH = 400
@@ -12,12 +17,14 @@ PIPE_SPEED = 2
 PIPE_GAP = 150
 PIPE_WIDTH = 80
 PIPE_HEIGHT = 400
+BIRD_SCALE = 0.6
+PIPE_SCALE = 1.0
 
 
 # ---------------- Uccellino ----------------
-class Bird(arcade.SpriteSolidColor):
+class Bird(arcade.Sprite):
     def __init__(self):
-        super().__init__(30, 30, arcade.color.YELLOW)
+        super().__init__(ASSETS / "bird.png", BIRD_SCALE)
         self.center_x = 100
         self.center_y = SCREEN_HEIGHT // 2
         self.change_y = 0
@@ -28,12 +35,15 @@ class Bird(arcade.SpriteSolidColor):
 
 
 # ------------------ Tubo ------------------
-class Pipe(arcade.SpriteSolidColor):
-    def __init__(self, x, y, height):
-        super().__init__(PIPE_WIDTH, height, arcade.color.GREEN)
+class Pipe(arcade.Sprite):
+    def __init__(self, x, y, flipped=False):
+        super().__init__(ASSETS / "pipe.png", PIPE_SCALE)
         self.center_x = x
         self.center_y = y
         self.change_x = -PIPE_SPEED
+
+        if flipped:
+            self.angle = 180
 
     def update(self, delta_time: float = 1 / 60):
         self.center_x += self.change_x
@@ -73,10 +83,10 @@ class FlappyGame(arcade.Window):
         x = SCREEN_WIDTH + PIPE_WIDTH
 
         self.pipe_list.append(
-            Pipe(x, gap_y - PIPE_GAP // 2 - PIPE_HEIGHT // 2, PIPE_HEIGHT)
+            Pipe(x, gap_y - PIPE_GAP // 2 - PIPE_HEIGHT // 2, flipped=False)
         )
         self.pipe_list.append(
-            Pipe(x, gap_y + PIPE_GAP // 2 + PIPE_HEIGHT // 2, PIPE_HEIGHT)
+            Pipe(x, gap_y + PIPE_GAP // 2 + PIPE_HEIGHT // 2, flipped=True)
         )
 
     # ------------------ Disegno ------------------
