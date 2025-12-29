@@ -7,8 +7,8 @@ BASE_DIR = Path(__file__).parent
 ASSETS = BASE_DIR / "assets"
 
 # ---------------- Costanti ----------------
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 480
 SCREEN_TITLE = "Flappy Bird (Arcade 3.3)"
 
 GRAVITY = -0.5
@@ -19,6 +19,8 @@ PIPE_WIDTH = 80
 PIPE_HEIGHT = 400
 BIRD_SCALE = 0.6
 PIPE_SCALE = 1.0
+BACKGROUND_SPEED = 1
+BACKGROUND_SCALE = 1.0
 
 
 # ---------------- Uccellino ----------------
@@ -53,9 +55,9 @@ class Pipe(arcade.Sprite):
 class FlappyGame(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-        arcade.set_background_color(arcade.color.SKY_BLUE)
 
         # Liste di immagini
+        self.background_list = arcade.SpriteList()
         self.bird_list = arcade.SpriteList()
         self.pipe_list = arcade.SpriteList()
 
@@ -65,11 +67,23 @@ class FlappyGame(arcade.Window):
 
     # ------------------ Setup ------------------
     def setup(self):
+        self.background_list.clear()
         self.bird_list.clear()
         self.pipe_list.clear()
 
         self.score = 0
         self.game_over = False
+
+        # Immagine di sfondo (2 per alternarle)
+        bg1 = arcade.Sprite(ASSETS / "background.png", BACKGROUND_SCALE)
+        bg1.left = 0
+        bg1.bottom = 0
+
+        bg2 = arcade.Sprite(ASSETS / "background.png", BACKGROUND_SCALE)
+        bg2.left = bg1.width
+        bg2.bottom = 0
+
+        self.background_list.extend([bg1, bg2])
 
         # Bird
         self.bird = Bird()
@@ -93,6 +107,7 @@ class FlappyGame(arcade.Window):
     def on_draw(self):
         self.clear()
 
+        self.background_list.draw()
         self.bird_list.draw()
         self.pipe_list.draw()
 
@@ -120,6 +135,13 @@ class FlappyGame(arcade.Window):
     def on_update(self, delta_time):
         if self.game_over:
             return
+
+        # Scorrimento sfondo
+        for bg in self.background_list:
+            bg.center_x -= BACKGROUND_SPEED
+
+            if bg.right <= 0:
+                bg.left = max(b.right for b in self.background_list)
 
         self.bird_list.update(delta_time)
         self.pipe_list.update(delta_time)
