@@ -65,6 +65,11 @@ class FlappyGame(arcade.Window):
         self.score = 0
         self.game_over = False
 
+        # Suoni
+        self.flap_sound = arcade.load_sound(ASSETS / "flap.wav")
+        self.hit_sound = arcade.load_sound(ASSETS / "hit.wav")
+        self.score_sound = arcade.load_sound(ASSETS / "score.wav")
+
     # ------------------ Setup ------------------
     def setup(self):
         self.background_list.clear()
@@ -102,6 +107,8 @@ class FlappyGame(arcade.Window):
         self.pipe_list.append(
             Pipe(x, gap_y + PIPE_GAP // 2 + PIPE_HEIGHT // 2, flipped=True)
         )
+
+        arcade.play_sound(self.score_sound)
 
     # ------------------ Disegno ------------------
     def on_draw(self):
@@ -148,10 +155,12 @@ class FlappyGame(arcade.Window):
 
         # Collisioni
         if arcade.check_for_collision_with_list(self.bird, self.pipe_list):
+            arcade.play_sound(self.hit_sound)
             self.game_over = True
 
         # Limiti schermo
         if self.bird.center_y < 0 or self.bird.center_y > SCREEN_HEIGHT:
+            arcade.play_sound(self.hit_sound)
             self.game_over = True
 
         # Genera tubi e aggiorna punteggio
@@ -171,6 +180,7 @@ class FlappyGame(arcade.Window):
                 self.setup()
             else:
                 self.bird.change_y = FLAP_STRENGTH
+                arcade.play_sound(self.flap_sound)
 
 
 # ------------------ Main ------------------
