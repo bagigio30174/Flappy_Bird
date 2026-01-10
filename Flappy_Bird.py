@@ -182,6 +182,10 @@ class FlappyGame(arcade.Window):
                 self.bird.change_y = FLAP_STRENGTH
                 arcade.play_sound(self.flap_sound)
 
+        elif key == arcade.key.ESCAPE:
+            # Quit the game
+            arcade.close_window()
+
 
 # ------------------ Main ------------------
 def main():
