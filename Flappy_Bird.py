@@ -128,9 +128,29 @@ class FlappyGame(arcade.Window):
 
         if self.game_over:
             arcade.draw_text(
-                "GAME OVER",
+                "Premi SPAZIO per iniziare",
+                SCREEN_WIDTH // 2,
+                SCREEN_HEIGHT // 2 + 48,
+                arcade.color.RED,
+                24,
+                anchor_x="center",
+                anchor_y="center",
+                align="center"
+            )
+            arcade.draw_text(
+                "Premi ESC per uscire",
                 SCREEN_WIDTH // 2,
                 SCREEN_HEIGHT // 2,
+                arcade.color.RED,
+                24,
+                anchor_x="center",
+                anchor_y="center",
+                align="center"
+            )
+            arcade.draw_text(
+                "GAME OVER",
+                SCREEN_WIDTH // 2,
+                SCREEN_HEIGHT // 2 - 48,
                 arcade.color.RED,
                 24,
                 anchor_x="center",
