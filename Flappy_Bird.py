@@ -64,6 +64,7 @@ class FlappyGame(arcade.Window):
         self.bird = None
         self.score = 0
         self.game_over = False
+        self.primo_avvio = True
 
         # Suoni
         self.flap_sound = arcade.load_sound(ASSETS / "flap.wav")
@@ -77,7 +78,10 @@ class FlappyGame(arcade.Window):
         self.pipe_list.clear()
 
         self.score = 0
-        self.game_over = False
+        if self.primo_avvio:
+            self.game_over = True
+        else:
+            self.game_over = False
 
         # Immagine di sfondo (2 per alternarle)
         bg1 = arcade.Sprite(ASSETS / "background.png", BACKGROUND_SCALE)
@@ -147,16 +151,17 @@ class FlappyGame(arcade.Window):
                 anchor_y="center",
                 align="center"
             )
-            arcade.draw_text(
-                "GAME OVER",
-                SCREEN_WIDTH // 2,
-                SCREEN_HEIGHT // 2 - 48,
-                arcade.color.RED,
-                24,
-                anchor_x="center",
-                anchor_y="center",
-                align="center"
-            )
+            if not self.primo_avvio:
+                arcade.draw_text(
+                    "GAME OVER",
+                    SCREEN_WIDTH // 2,
+                    SCREEN_HEIGHT // 2 - 48,
+                    arcade.color.RED,
+                    24,
+                    anchor_x="center",
+                    anchor_y="center",
+                    align="center"
+                )
 
     # -------------- Ciclo di aggiornamento --------------
     def on_update(self, delta_time):
@@ -197,6 +202,8 @@ class FlappyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.SPACE:
             if self.game_over:
+                if self.primo_avvio:
+                    self.primo_avvio = False
                 self.setup()
             else:
                 self.bird.change_y = FLAP_STRENGTH
